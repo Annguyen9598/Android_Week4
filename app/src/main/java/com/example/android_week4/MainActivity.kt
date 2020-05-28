@@ -17,12 +17,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
+import com.example.android_week4.Adapter.ViewPagerAdapter
+import com.example.android_week4.Fragment.MyFavorite
+import com.example.android_week4.Fragment.NowPlaying
+import com.example.android_week4.Fragment.TopRating
+import com.example.android_week4.Movie
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
 import com.khtn.androidcamp.DataCenter
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), NowPlaying.ListenerFromNowPlaingFragment ,TopRating.ListenerFromTopRatingFragment{
+class MainActivity : AppCompatActivity(), NowPlaying.ListenerFromNowPlaingFragment , TopRating.ListenerFromTopRatingFragment{
 
 //    lateinit var toolbar : ActionBar
     var favoriteMoviesList = ArrayList<Movie>()
@@ -32,7 +37,6 @@ class MainActivity : AppCompatActivity(), NowPlaying.ListenerFromNowPlaingFragme
         setContentView(R.layout.activity_main)
 
         init()
-
     }
 //    private val listener = object : MovieAdapter.MovieListener{
 //        override fun onClick(pos: Int, movie: Movie) {
@@ -72,7 +76,7 @@ class MainActivity : AppCompatActivity(), NowPlaying.ListenerFromNowPlaingFragme
         supportActionBar?.hide()
         viewPager = findViewById(R.id.viewPager)
 
-        val pageAdapter =ViewPagerAdapter(supportFragmentManager)
+        val pageAdapter = ViewPagerAdapter(supportFragmentManager)
         viewPager.adapter = pageAdapter
 
 //        if (supportFragmentManager.backStackEntryCount == 0) {
