@@ -12,19 +12,27 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android_week4.*
 import com.example.android_week4.Adapter.GridMovieAdapter
 import com.example.android_week4.Adapter.MovieAdapter
+import com.example.android_week4.RoomPersistence.AppDatabase
+import com.example.android_week4.RoomPersistence.MovieDAO
 import kotlinx.android.synthetic.main.fragment_now_playing.*
 
 class MyFavorite : Fragment() {
     lateinit var btnList : ImageButton
     lateinit var btnGrid : ImageButton
     lateinit var FavoriteMovies : ArrayList<Movie>
-
+    private lateinit var db: AppDatabase
+    lateinit var dao : MovieDAO
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FavoriteMovies = ArrayList<Movie>()
 
         val activity : MainActivity = activity as MainActivity
-        FavoriteMovies = activity.getFavoriteMovies()
+//        FavoriteMovies = activity.getFavoriteMovies()
+
+        db = AppDatabase.invoke(activity)
+        dao = db.movieDAO()
+        val movies = dao.getAll()
+        this.FavoriteMovies.addAll(movies)
     }
     override fun onCreateView(
         inflater: LayoutInflater,

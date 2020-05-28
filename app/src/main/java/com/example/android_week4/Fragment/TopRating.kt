@@ -16,6 +16,8 @@ import com.example.android_week4.*
 import com.example.android_week4.Adapter.GridMovieAdapter
 import com.example.android_week4.Adapter.MovieAdapter
 import com.example.android_week4.Data.data
+import com.example.android_week4.RoomPersistence.AppDatabase
+import com.example.android_week4.RoomPersistence.MovieDAO
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.khtn.androidcamp.DataCenter_1
@@ -24,13 +26,19 @@ import kotlinx.android.synthetic.main.fragment_now_playing.*
 class TopRating : Fragment() {
     lateinit var btnList : ImageButton
     lateinit var btnGrid : ImageButton
-    lateinit var FavoriteMovies : ArrayList<Movie>
+    var FavoriteMovies = ArrayList<Movie>()
     lateinit var mListener : ListenerFromTopRatingFragment
+    private lateinit var db: AppDatabase
+    lateinit var dao : MovieDAO
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FavoriteMovies = ArrayList<Movie>()
         val activity : MainActivity = activity as MainActivity
-        FavoriteMovies = activity.getFavoriteMovies()
+//        FavoriteMovies = activity.getFavoriteMovies()
+
+        db = AppDatabase.invoke(activity)
+        dao = db.movieDAO()
+        val movies = dao.getAll()
+        this.FavoriteMovies.addAll(movies)
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -98,10 +106,10 @@ class TopRating : Fragment() {
                 .setMessage("Ban co muon them phim vao danh sach yeu thich?")
                 .setPositiveButton("YES"){_,_->
                     if(FavoriteMovies.contains(movie)){
-                        Toast.makeText(context,"Phim da co trong danh sach",Toast.LENGTH_SHORT)
+                        Toast.makeText(context,"Phim da co trong danh sach",Toast.LENGTH_SHORT).show()
                     }else{
                         addFvMovie(movie)
-                        Toast.makeText(context,"Them phim vao danh sach thanh cong",Toast.LENGTH_SHORT)
+                        Toast.makeText(context,"Them phim vao danh sach thanh cong",Toast.LENGTH_SHORT).show()
                     }
                 }.setNegativeButton("NO"){_,_ -> }
             val dialog = builder.create()

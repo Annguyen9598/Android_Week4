@@ -16,6 +16,8 @@ import com.example.android_week4.*
 import com.example.android_week4.Adapter.GridMovieAdapter
 import com.example.android_week4.Adapter.MovieAdapter
 import com.example.android_week4.Data.data
+import com.example.android_week4.RoomPersistence.AppDatabase
+import com.example.android_week4.RoomPersistence.MovieDAO
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.khtn.androidcamp.DataCenter_1
@@ -26,7 +28,10 @@ class NowPlaying : Fragment() {
     lateinit var btnList : ImageButton
     lateinit var btnGrid : ImageButton
     lateinit var mListener : ListenerFromNowPlaingFragment
-    lateinit var FavoriteMovies : ArrayList<Movie>
+    var FavoriteMovies = ArrayList<Movie>()
+
+    private lateinit var db: AppDatabase
+    lateinit var dao : MovieDAO
     private val TAG = NowPlaying::class.java.simpleName
 //    override fun onAttach(context: Context) {
 //        super.onAttach(context)
@@ -34,9 +39,13 @@ class NowPlaying : Fragment() {
 //    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FavoriteMovies = ArrayList<Movie>()
         val activity : MainActivity = activity as MainActivity
-        FavoriteMovies = activity.getFavoriteMovies()
+//        FavoriteMovies = activity.getFavoriteMovies()
+
+        db = AppDatabase.invoke(activity)
+        dao = db.movieDAO()
+        val movies = dao.getAll()
+        this.FavoriteMovies.addAll(movies)
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,10 +54,6 @@ class NowPlaying : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_now_playing,container,false)
     }
-//    override fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onActivityCreated(savedInstanceState)
-//    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnList = view?.findViewById<ImageButton>(R.id.now_btn_list)
@@ -57,11 +62,7 @@ class NowPlaying : Fragment() {
         var layoutmanager :LinearLayoutManager =LinearLayoutManager(context)
 //        layoutmanager.orientation = LinearLayoutManager.VERTICAL
         var adapter = context?.let {
-            MovieAdapter(
-                it,
-                converJsonToData(),
-                listener
-            )
+            MovieAdapter(it, converJsonToData(), listener)
         }
 
         rv.layoutManager = layoutmanager
@@ -71,11 +72,7 @@ class NowPlaying : Fragment() {
             override fun onClick(v: View?) {
                 var layoutmanager: LinearLayoutManager = LinearLayoutManager(context)
                 var adapter = context?.let {
-                    MovieAdapter(
-                        it,
-                        converJsonToData(),
-                        listener
-                    )
+                    MovieAdapter(it, converJsonToData(), listener)
                 }
                 rv.layoutManager = layoutmanager
                 rv.adapter       = adapter
@@ -85,11 +82,7 @@ class NowPlaying : Fragment() {
             override fun onClick(v: View?) {
                 var layoutmanager: GridLayoutManager = GridLayoutManager(context, 2)
                 var adapter = context?.let {
-                    GridMovieAdapter(
-                        it,
-                        converJsonToData(),
-                        listener1
-                    )
+                    GridMovieAdapter(it, converJsonToData(), listener1)
                 }
                 rv.layoutManager = layoutmanager
                 rv.adapter       = adapter
