@@ -34,7 +34,7 @@
                     android:layout_height="30dp"
                     app:layout_constraintEnd_toEndOf="@id/imageView"
                     app:layout_constraintBottom_toBottomOf="@id/imageView"
-                    android:src="@drawable/heart_24dp"
+                    android:src="@drawable/ic_star_black_24dp"
                     android:layout_margin="2dp"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>

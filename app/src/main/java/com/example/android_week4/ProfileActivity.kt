@@ -37,10 +37,16 @@ class ProfileActivity : AppCompatActivity() {
             val overview = data.overview
             val poster = data.getposter()
             val banner = data.getbanner()
+            val rating = data.vote_average
+            val releaseDate = data.release_date
+
             textviewtitlemovie.text = title
             textviewoverview.text   = overview
             tvName.text             = title
             tvdescription .text     = overview
+            rBar.rating             = rating/2
+            rating3.text            = rating.toString()
+            releasedate.text        = releaseDate
             Glide.with(this)
                 .load(banner)
                 .centerCrop()
@@ -49,6 +55,10 @@ class ProfileActivity : AppCompatActivity() {
                 .load(poster)
                 .centerCrop()
                 .into(imageviewposter)
+            Glide.with(this)
+                .load(banner)
+                .centerCrop()
+                .into(ivbanner)
         }
     }
 }

@@ -1,11 +1,14 @@
 package com.example.android_week4.Fragment
 
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,19 +18,25 @@ import com.example.android_week4.Adapter.MovieAdapter
 import com.example.android_week4.RoomPersistence.AppDatabase
 import com.example.android_week4.RoomPersistence.MovieDAO
 import kotlinx.android.synthetic.main.fragment_now_playing.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 
 class MyFavorite : Fragment() {
     lateinit var btnList : ImageButton
     lateinit var btnGrid : ImageButton
-    lateinit var FavoriteMovies : ArrayList<Movie>
+
+    var FavoriteMovies = ArrayList<Movie>()
+
     private lateinit var db: AppDatabase
     lateinit var dao : MovieDAO
+
+    private lateinit var movieAdapter: MovieAdapter
+    private lateinit var movieGridAdapter: GridMovieAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FavoriteMovies = ArrayList<Movie>()
-
         val activity : MainActivity = activity as MainActivity
-//        FavoriteMovies = activity.getFavoriteMovies()
 
         db = AppDatabase.invoke(activity)
         dao = db.movieDAO()
@@ -42,9 +51,6 @@ class MyFavorite : Fragment() {
         return inflater.inflate(R.layout.fragment_my_favorite,container,false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnList = view?.findViewById<ImageButton>(R.id.now_btn_list)
@@ -52,43 +58,30 @@ class MyFavorite : Fragment() {
 
 
         var layoutmanager : LinearLayoutManager = LinearLayoutManager(context)
-        var adapter = context?.let {
-            MovieAdapter(
-                it,
-                FavoriteMovies,
-                listener
-            )
-        }
+
+        movieAdapter = context?.let {
+            MovieAdapter(it, FavoriteMovies, listener)
+        }!!
+        movieGridAdapter = context?.let {
+            GridMovieAdapter(it, FavoriteMovies, listener1)
+        }!!
 
         rv.layoutManager = layoutmanager
-        rv.adapter       = adapter
+        rv.adapter       = movieAdapter
 
         btnList.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View?) {
                 var layoutmanager: LinearLayoutManager = LinearLayoutManager(context)
-                var adapter = context?.let {
-                    MovieAdapter(
-                        it,
-                        FavoriteMovies,
-                        listener
-                    )
+                    rv.layoutManager = layoutmanager
+                    rv.adapter       = movieAdapter
                 }
-                rv.layoutManager = layoutmanager
-                rv.adapter       = adapter
             }
-        })
+        )
         btnGrid.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View?) {
                 var layoutmanager: GridLayoutManager = GridLayoutManager(context, 2)
-                var adapter = context?.let {
-                    GridMovieAdapter(
-                        it,
-                        FavoriteMovies,
-                        listener1
-                    )
-                }
                 rv.layoutManager = layoutmanager
-                rv.adapter       = adapter
+                rv.adapter       = movieGridAdapter
             }
         })
     }
@@ -101,6 +94,26 @@ class MyFavorite : Fragment() {
         override fun addFavoriteMovie(pos: Int, movie: Movie) {
 
         }
+
+        override fun removeFavoriteMovie(pos: Int, movie: Movie) {
+            val builder = AlertDialog.Builder(context)
+                .setTitle("Alert")
+                .setMessage("Ban co muon xoa phim khoi danh sach yeu thich?")
+                .setPositiveButton("YES"){_,_->
+                    dao.delete(movie)
+                    FavoriteMovies.removeAt(pos)
+                    movieAdapter.notifyItemRemoved(pos)
+                    Timer(false).schedule(500) {
+                        activity?.runOnUiThread {
+                            movieAdapter.setData(FavoriteMovies)
+                            movieAdapter.notifyDataSetChanged()
+                        }
+                    }
+                    Toast.makeText(context,"Xoa phim thanh cong", Toast.LENGTH_SHORT).show()
+                }.setNegativeButton("NO"){dialog,_ ->dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
+        }
     }
     private var listener1 = object :
         GridMovieAdapter.MovieListener {
@@ -110,6 +123,26 @@ class MyFavorite : Fragment() {
 
         override fun addFavoriteMovie(pos: Int, movie: Movie) {
 
+        }
+
+        override fun removeFavoriteMovie(pos: Int, movie: Movie) {
+            val builder = AlertDialog.Builder(context)
+                .setTitle("Alert")
+                .setMessage("Ban co muon xoa phim khoi danh sach yeu thich?")
+                .setPositiveButton("YES"){_,_->
+                    dao.delete(movie)
+                    FavoriteMovies.removeAt(pos)
+                    movieGridAdapter.notifyItemRemoved(pos)
+                    Timer(false).schedule(500) {
+                        activity?.runOnUiThread {
+                            movieGridAdapter.setData(FavoriteMovies)
+                            movieGridAdapter.notifyDataSetChanged()
+                        }
+                    }
+                    Toast.makeText(context,"Xoa phim thanh cong", Toast.LENGTH_SHORT).show()
+                }.setNegativeButton("NO"){dialog,_ ->dialog.dismiss() }
+            val dialog = builder.create()
+            dialog.show()
         }
     }
     private fun startProfileActivity(movie: Movie) {

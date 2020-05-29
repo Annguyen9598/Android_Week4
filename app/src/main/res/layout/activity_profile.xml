@@ -8,27 +8,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
-<!--<LinearLayout-->
-<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:fitsSystemWindows="true"-->
-<!--    android:orientation="vertical"-->
-<!--    tools:context=".ProfileActivity"-->
-<!--    android:background="#fcfeff"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent">-->
-
-<!--    <androidx.appcompat.widget.Toolbar-->
-<!--        android:id="@+id/toolbar"-->
-<!--        app:titleTextColor="#fff"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="?attr/actionBarSize"-->
-<!--        android:background="#008577"-->
-<!--        app:subtitleTextColor="#f5fbff"-->
-<!--        android:padding="1dp">-->
-
-<!--    </androidx.appcompat.widget.Toolbar>-->
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -140,15 +119,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="@dimen/spacing_large">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <View
-                    android:layout_width="@dimen/spacing_xmlarge"
-                    android:layout_height="match_parent"/>
+                    android:layout_width="@dimen/spacing_large"
+                    android:layout_height="match_parent" />
 
                 <TextView
                     android:id="@+id/tvName"
@@ -156,30 +134,71 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_large"
                     android:textStyle="bold"
+                    android:layout_marginLeft="15dp"
                     android:text="Irene J. Fritz"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
                     android:textColor="@color/grey_90"/>
 
             </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_large"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RatingBar
+                    android:id="@+id/rBar"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
+                    android:stepSize="0.1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/rating3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="25dp"
+                    android:text="0.0"
+                    android:textColor="@color/grey_60"
+                    app:layout_constraintBottom_toBottomOf="@+id/rBar"
+                    app:layout_constraintStart_toEndOf="@+id/rBar"
+                    app:layout_constraintTop_toTopOf="@+id/rBar"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <TextView
+                    android:id="@+id/releasedate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
+                    android:text="Releasedate"
+                    android:textColor="@color/grey_60"
+                    android:textSize="16sp"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintBottom_toBottomOf="@+id/rating3"
+                    app:layout_constraintStart_toEndOf="@+id/rating3"
+                    app:layout_constraintTop_toTopOf="@id/rating3" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing_large"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
                 <ImageButton
                     android:layout_width="@dimen/spacing_mxlarge"
                     android:layout_height="@dimen/spacing_mxlarge"
                     android:background="@android:color/transparent"
                     android:tint="@color/grey_60"
-                    app:srcCompat="@drawable/ic_person"/>
-
+                    app:srcCompat="@drawable/ic_person"
+                    tools:ignore="VectorDrawableCompat" />
                 <View
-                    android:layout_width="@dimen/spacing_large"
+                    android:layout_width="10dp"
                     android:layout_height="match_parent"/>
 
                 <LinearLayout
@@ -206,11 +225,48 @@
                 </LinearLayout>
 
             </LinearLayout>
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing_large"/>
-
+            <ImageView
+                android:id="@+id/ivbanner"
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="220dp">
+            </ImageView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_large"/>
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:orientation="horizontal">-->
+<!--                    <ImageView-->
+<!--                        android:id="@+id/ivAdd"-->
+<!--                        android:layout_width="40dp"-->
+<!--                        android:layout_height="40dp"-->
+<!--                        android:src="@drawable/ic_add_black_24dp"-->
+<!--                        android:layout_marginLeft="15dp">-->
+<!--                    </ImageView>-->
+<!--                    <ImageView-->
+<!--                        android:id="@+id/ivRemove"-->
+<!--                        android:layout_width="40dp"-->
+<!--                        android:layout_height="40dp"-->
+<!--                        android:src="@drawable/ic_remove_black_24dp"-->
+<!--                        android:layout_marginLeft="10dp"/>-->
+<!--                    <ImageView-->
+<!--                        android:id="@+id/ivShare"-->
+<!--                        android:layout_width="40dp"-->
+<!--                        android:layout_height="40dp"-->
+<!--                        android:src="@drawable/ic_share_black_24dp"-->
+<!--                        android:layout_marginLeft="10dp">-->
+<!--                    </ImageView>-->
+<!--                </LinearLayout>-->
+<!--            </LinearLayout>-->
         </LinearLayout>
 
     </LinearLayout>

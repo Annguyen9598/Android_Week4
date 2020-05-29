@@ -24,7 +24,6 @@ import com.khtn.androidcamp.DataCenter_1
 import kotlinx.android.synthetic.main.fragment_now_playing.*
 
 class NowPlaying : Fragment() {
-//    lateinit var ACTIVITY : MainActivity
     lateinit var btnList : ImageButton
     lateinit var btnGrid : ImageButton
     lateinit var mListener : ListenerFromNowPlaingFragment
@@ -33,14 +32,11 @@ class NowPlaying : Fragment() {
     private lateinit var db: AppDatabase
     lateinit var dao : MovieDAO
     private val TAG = NowPlaying::class.java.simpleName
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//        ACTIVITY = context as MainActivity
-//    }
+    private lateinit var movieAdapter: MovieAdapter
+    private lateinit var movieGridAdapter: GridMovieAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val activity : MainActivity = activity as MainActivity
-//        FavoriteMovies = activity.getFavoriteMovies()
 
         db = AppDatabase.invoke(activity)
         dao = db.movieDAO()
@@ -60,32 +56,28 @@ class NowPlaying : Fragment() {
         btnGrid = view?.findViewById<ImageButton>(R.id.now_btn_grid)
 
         var layoutmanager :LinearLayoutManager =LinearLayoutManager(context)
-//        layoutmanager.orientation = LinearLayoutManager.VERTICAL
-        var adapter = context?.let {
+        movieAdapter = context?.let {
             MovieAdapter(it, converJsonToData(), listener)
-        }
+        }!!
+        movieGridAdapter = context?.let {
+            GridMovieAdapter(it, converJsonToData(), listener1)
+        }!!
 
         rv.layoutManager = layoutmanager
-        rv.adapter       = adapter
+        rv.adapter       = movieAdapter
 
         btnList.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View?) {
                 var layoutmanager: LinearLayoutManager = LinearLayoutManager(context)
-                var adapter = context?.let {
-                    MovieAdapter(it, converJsonToData(), listener)
-                }
                 rv.layoutManager = layoutmanager
-                rv.adapter       = adapter
+                rv.adapter       = movieAdapter
             }
         })
         btnGrid.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View?) {
                 var layoutmanager: GridLayoutManager = GridLayoutManager(context, 2)
-                var adapter = context?.let {
-                    GridMovieAdapter(it, converJsonToData(), listener1)
-                }
                 rv.layoutManager = layoutmanager
-                rv.adapter       = adapter
+                rv.adapter       = movieGridAdapter
             }
         })
     }
@@ -107,9 +99,13 @@ class NowPlaying : Fragment() {
                         addFvMovie(movie)
                         Toast.makeText(context,"Them phim vao danh sach thanh cong ", Toast.LENGTH_SHORT).show()
                     }
-                }.setNegativeButton("NO"){_,_-> }
+                }.setNegativeButton("NO"){dialog,_->dialog.dismiss() }
             val dialog = builder.create()
                 dialog.show()
+        }
+
+        override fun removeFavoriteMovie(pos: Int, movie: Movie) {
+
         }
     }
     private var listener1 = object :
@@ -129,9 +125,13 @@ class NowPlaying : Fragment() {
                         addFvMovie(movie)
                         Toast.makeText(context,"Them phim vao danh sach thanh cong ", Toast.LENGTH_SHORT).show()
                     }
-                }.setNegativeButton("NO"){_,_-> }
+                }.setNegativeButton("NO"){dialog,_->dialog.dismiss() }
             val dialog = builder.create()
             dialog.show()
+        }
+
+        override fun removeFavoriteMovie(pos: Int, movie: Movie) {
+
         }
     }
 
@@ -161,19 +161,6 @@ class NowPlaying : Fragment() {
 
         val arrayTutorialType =object: TypeToken<ArrayList<Movie>>() {}.type;
         var movies :ArrayList<Movie> = Gson().fromJson(Gson().toJson(result),arrayTutorialType)
-//        Log.v(TAG, data.toString())
         return movies
-//        val movies =ArrayList<Movie>()
-//
-//        val data = Gson().fromJson(DataCenter.getMovieJsonString(),data::class.java)
-//        val results = data.results
-//        for(i in 0 until results.size){
-//            val title       = results.get(i).title
-//            val overview    = results.get(i).overview
-//            val poster      = "https://image.tmdb.org/t/p/w500/".plus(results.get(i).posterPath)
-//            val banner      = "https://image.tmdb.org/t/p/w500/".plus(results.get(i).backdropPath)
-//            movies.add(Movie(title,overview,poster,banner))
-//        }
-//        return movies
     }
 }

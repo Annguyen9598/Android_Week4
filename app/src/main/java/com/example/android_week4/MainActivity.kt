@@ -1,6 +1,8 @@
 package com.example.android_week4
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -33,7 +35,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), NowPlaying.ListenerFromNowPlaingFragment , TopRating.ListenerFromTopRatingFragment{
 
     var favoriteMoviesList = ArrayList<Movie>()
-
     lateinit var dao :MovieDAO
 
 //    private lateinit var viewPager : ViewPager
@@ -66,12 +67,26 @@ class MainActivity : AppCompatActivity(), NowPlaying.ListenerFromNowPlaingFragme
 
 //        FavoriteMovies = ArrayList<Movie>()
 
-        val bottomNavigation : BottomNavigationView = findViewById(R.id.navigationView)
+        val preference = getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
 
+        val bottomNavigation : BottomNavigationView = findViewById(R.id.navigationView)
         bottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         supportActionBar?.hide()
 
-        openFragment(NowPlaying())
+        val tab : Int = preference.getInt("KEY-TAB",0)
+        when(tab){
+            0 ->{
+                openFragment(NowPlaying())
+            }
+            1 ->{
+                openFragment(TopRating())
+            }
+            2 ->{
+                openFragment(MyFavorite())
+            }
+        }
+
+
 
 //        viewPager = findViewById(R.id.viewPager)
 //
@@ -117,16 +132,28 @@ class MainActivity : AppCompatActivity(), NowPlaying.ListenerFromNowPlaingFragme
         when(item.itemId){
             R.id.item_nowPlaying ->{
 //                viewPager.currentItem = 0
+                val preference = getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+                val prefEditor = preference.edit()
+                prefEditor.putInt("KEY-TAB", 0)
+                prefEditor.apply()
                 openFragment(NowPlaying())
                 return@OnNavigationItemSelectedListener true;
             }
             R.id.item_topRating ->{
 //                viewPager.currentItem = 1
+                val preference = getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+                val prefEditor = preference.edit()
+                prefEditor.putInt("KEY-TAB", 1)
+                prefEditor.apply()
                 openFragment(TopRating())
                 return@OnNavigationItemSelectedListener true;
             }
             R.id.item_myFavorite ->{
 //                viewPager.currentItem = 2
+                val preference = getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+                val prefEditor = preference.edit()
+                prefEditor.putInt("KEY-TAB", 2)
+                prefEditor.apply()
                 openFragment(MyFavorite())
                 return@OnNavigationItemSelectedListener true;
             }
@@ -147,4 +174,5 @@ class MainActivity : AppCompatActivity(), NowPlaying.ListenerFromNowPlaingFragme
     override fun onFragmentListener(movie: Movie) {
         dao.insert(movie)
     }
+
 }

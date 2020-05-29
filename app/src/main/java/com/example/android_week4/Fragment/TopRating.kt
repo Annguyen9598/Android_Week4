@@ -30,11 +30,11 @@ class TopRating : Fragment() {
     lateinit var mListener : ListenerFromTopRatingFragment
     private lateinit var db: AppDatabase
     lateinit var dao : MovieDAO
+    private lateinit var movieAdapter: MovieAdapter
+    private lateinit var movieGridAdapter: GridMovieAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val activity : MainActivity = activity as MainActivity
-//        FavoriteMovies = activity.getFavoriteMovies()
-
         db = AppDatabase.invoke(activity)
         dao = db.movieDAO()
         val movies = dao.getAll()
@@ -52,45 +52,29 @@ class TopRating : Fragment() {
         btnList = view?.findViewById<ImageButton>(R.id.now_btn_list)
         btnGrid = view?.findViewById<ImageButton>(R.id.now_btn_grid)
 
-
         var layoutmanager : LinearLayoutManager = LinearLayoutManager(context)
-        var adapter = context?.let {
-            MovieAdapter(
-                it,
-                converJsonToData(),
-                listener
-            )
-        }
+        movieAdapter = context?.let {
+            MovieAdapter(it, converJsonToData(), listener)
+        }!!
+        movieGridAdapter = context?.let {
+            GridMovieAdapter(it, converJsonToData(), listener1)
+        }!!
 
         rv.layoutManager = layoutmanager
-        rv.adapter       = adapter
+        rv.adapter       = movieAdapter
 
         btnList.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View?) {
                 var layoutmanager: LinearLayoutManager = LinearLayoutManager(context)
-                var adapter = context?.let {
-                    MovieAdapter(
-                        it,
-                        converJsonToData(),
-                        listener
-                    )
-                }
                 rv.layoutManager = layoutmanager
-                rv.adapter       = adapter
+                rv.adapter       = movieAdapter
             }
         })
         btnGrid.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View?) {
                 var layoutmanager: GridLayoutManager = GridLayoutManager(context, 2)
-                var adapter = context?.let {
-                    GridMovieAdapter(
-                        it,
-                        converJsonToData(),
-                        listener1
-                    )
-                }
                 rv.layoutManager = layoutmanager
-                rv.adapter       = adapter
+                rv.adapter       = movieGridAdapter
             }
         })
     }
@@ -111,9 +95,13 @@ class TopRating : Fragment() {
                         addFvMovie(movie)
                         Toast.makeText(context,"Them phim vao danh sach thanh cong",Toast.LENGTH_SHORT).show()
                     }
-                }.setNegativeButton("NO"){_,_ -> }
+                }.setNegativeButton("NO"){dialog,_ ->dialog.dismiss() }
             val dialog = builder.create()
                 dialog.show()
+        }
+
+        override fun removeFavoriteMovie(pos: Int, movie: Movie) {
+
         }
     }
     private var listener1 = object :
@@ -133,9 +121,13 @@ class TopRating : Fragment() {
                         addFvMovie(movie)
                         Toast.makeText(context,"Them phim vao danh sach thanh cong",Toast.LENGTH_SHORT)
                     }
-                }.setNegativeButton("NO"){_,_ -> }
+                }.setNegativeButton("NO"){dialog,_ ->dialog.dismiss() }
             val dialog = builder.create()
             dialog.show()
+        }
+
+        override fun removeFavoriteMovie(pos: Int, movie: Movie) {
+
         }
     }
     private fun addFvMovie(movie : Movie){

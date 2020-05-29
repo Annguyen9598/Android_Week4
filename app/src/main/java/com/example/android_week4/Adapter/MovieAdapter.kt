@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.example.android_week4.Movie
 import com.example.android_week4.R
 
-class MovieAdapter(val ctx : Context, val movies : ArrayList<Movie>, val listener : MovieListener) : RecyclerView.Adapter<MovieAdapter.movieVH>() {
+class MovieAdapter(val ctx : Context, var movies : ArrayList<Movie>, val listener : MovieListener) : RecyclerView.Adapter<MovieAdapter.movieVH>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): movieVH {
 
@@ -38,13 +38,21 @@ class MovieAdapter(val ctx : Context, val movies : ArrayList<Movie>, val listene
         holder.itemView.setOnClickListener{
             listener?.onClick(position,movie)
         }
+        holder.itemView.setOnLongClickListener {
+            listener?.removeFavoriteMovie(position,movie)
+            true
+        }
         holder.starIcon.setOnClickListener{
             listener?.addFavoriteMovie(position,movie)
         }
     }
+    fun setData(items: java.util.ArrayList<Movie>) {
+        this.movies = items
+    }
     interface MovieListener{
         fun onClick(pos : Int, movie : Movie)
         fun addFavoriteMovie(pos : Int, movie : Movie)
+        fun removeFavoriteMovie(pos: Int, movie : Movie)
     }
     class movieVH(itemView : View) : RecyclerView.ViewHolder(itemView){
         val ivPoster        = itemView.findViewById<ImageView>(R.id.imageView)
